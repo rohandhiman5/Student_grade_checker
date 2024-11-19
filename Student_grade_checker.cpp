@@ -1,341 +1,435 @@
-#include <iostream>
-#include <fstream>
-#include <unordered_map>
-#include <vector>
-#include <string>
-#include <iomanip>
-#include <algorithm>
+//student management System.
+//all header files
+#include<iostream>
+#include<conio.h>
+#include<string.h>
+#include<iomanip>
+#include<windows.h>
+#include<fstream>
+#include<stdlib.h>
+#include<stdio.h>
+#include<string>
+#include<vector>
+#include<unordered_map> 
 
 using namespace std;
 
-// Define Course structure
-struct Courses {
-    string courseID;
-    string courseName;
+
+struct GradePolicy{
+   int LowerBound;
+   int UpperBound;
+   char Grade;
+};
+
+
+class Courses{
+    
+    public:
+    char Course_code[10];
     int credits;
-};
+    char Course_name[10];
 
-// Function to return the list of available courses (hardcoded for demonstration)
-unordered_map<string, Courses> courseCatalog() {
-    unordered_map<string, Courses> courses;
-    courses["CSE101"] = {"CSE101", "Introduction to Computer Science", 3};
-    courses["CSE102"] = {"CSE102", "Data Structures", 4};
-    courses["CSE201"] = {"CSE201", "Operating Systems", 3};
-    courses["CSE202"] = {"CSE202", "Algorithms", 4};
-    return courses;
-}
-
-class student {
-public:
-    string name;
-    long long Roll_no;
-    int age;
-    string Branch;
-    vector<string> registeredCourses;
-    int totalCourses;
-    unordered_map<string, int> marks_map;
-    double CGPA;
-
-    // Constructor to initialize default values
-    student() : totalCourses(0), CGPA(0.0) {}
-
-    void getdata();
-    void showdata() const;
-    void Enter_courses(int);
-    double calculateCGPA();
-};
-
-// Method to input student data
-void student::getdata() {
-    cin.ignore(); // Clear input buffer
-    cout << "\t* ENTER STUDENT NAME: ";
-    getline(cin, name); // Safe input with getline
-
-    cout << "\t* ENTER STUDENT ROLL.NO: ";
-    cin >> Roll_no;
-
-    cout << "\t* ENTER STUDENT AGE: ";
-    cin >> age;
-
-    cout << "\t* ENTER STUDENT BRANCH: ";
-    cin >> Branch;
-
-    cout << "\t* ENTER TOTAL REGISTERED COURSES BY THE STUDENT: ";
-    int n;
-    cin >> n;
-
-    Enter_courses(n);
-}
-
-// Method to display student data
-void student::showdata() const {
-    cout << "\nSTUDENT NAME: " << name
-         << "\nSTUDENT ROLL NO: " << Roll_no
-         << "\nSTUDENT AGE: " << age
-         << "\nSTUDENT BRANCH: " << Branch
-         << "\nTOTAL REGISTERED COURSES: " << totalCourses;
-
-    if (!marks_map.empty()) {
-        cout << "\nCOURSES AND MARKS: ";
-        for (const auto& course : marks_map) {
-            cout << "\n  Course ID: " << course.first
-                 << ", Marks: " << course.second;
-        }
+   // constructor
+   
+    Courses(){
+        strcpy(Course_code,"N/A");
+        credits=0;
     }
 
-    cout << "\nCGPA OF STUDENT: " << CGPA << endl;
+    Courses(const char* code, int cr, const char* name) {
+        strcpy(Course_code, code);
+        credits = cr;
+        strcpy(Course_name, name);
+    }
+
+};
+
+
+
+unordered_map<string,Courses> courseCatalog(){
+        unordered_map<string, Courses> courseCatalog = {
+        {"CS101", Courses{"CS101", 4, "Data Structures"}},
+        {"CS102", Courses{"CS102", 3, "Algorithms"}},
+        {"CS103", Courses{"CS103", 3, "Operating Systems"}}
+    };
+    return courseCatalog;
+    
 }
 
-// Method to enter course data
-void student::Enter_courses(int n) {
-    unordered_map<string, Courses> Temp = courseCatalog();
-    totalCourses = 0; // Initialize to 0
-    cin.ignore(); // Clear buffer for next input
+
+
+
+class student
+{
+    char name[30];
+    long long Roll_no;
+    int age;
+    char Branch[10];
+    vector<string> registeredCourses;
+    unordered_map<string,int> marks_map;
+    double CGPA;
+    
+
+    string convert(string s)
+    {
+        for(int i=0;i<s.length();i++)
+        {
+            s[i]=toupper(s[i]);
+        }
+        return s;
+    }
+
+public:
+    // void intro(void);   // introduction of project.
+    void ccolor(int); //display colorful contain.
+    // void loadingbar(void);   //simple loading bar.
+    // void login(void); //simple login contain.
+    void getdata(void);   //Get all data from user.
+    void showdata(void);   //display all data .
+    void viewAlldata();     //display all data from files.
+    int storedata();        //store all data in a file
+    void searchData(char *);    //search a perticuler data.
+    void showsearch(void);      //display search.
+    void deleteData(char *);    //delete a data.
+    void updateData(char *);    //use to update a data.
+    void Enter_courses(int);
+    double Calculate_CGPA(const unordered_map<string, Courses>& courseCatalog);
+
+    //constructor
+    student()
+    {
+        Roll_no=0;
+        age=0;
+        CGPA=0.0;
+        strcpy(Branch,"N/A");
+        strcpy(name,"N/A");
+    }
+
+
+
+
+};
+void student::ccolor(int clr){
+	HANDLE  hConsole;
+	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, clr);
+
+//the above code displays colorful background.
+}
+
+
+
+// void student::login()
+// {
+//     ccolor(14); // simple login with user_id and password
+//     char ui[]="ASHFAQUE";
+//     char psw[]="3535";
+//     char gui[10],gpsw[10];
+//     cout<<"\n\t\t__"<<endl
+//         <<"\t\t|ENTER USER ID:-|";
+//     cin>>gui;
+//     cout<<"\n\t\t__"<<endl
+//         <<"\t\t|ENTER PASSWORD:-|";
+//     cin>>gpsw;
+//     if(strcmp(ui,gui)!=0 && strcmp(psw,gpsw)==0)
+//        {
+//            ccolor(12);
+//         cout<<"\t\tINVALID UI AND PASSWORD:";
+//         getch();
+//         exit(0);
+//     }
+//     else
+//     {
+//         cout<<"\t\tLOGIN SUCSESSFULLY:-\n";
+//     }
+// }
+
+
+void student::getdata()
+{
+
+   fflush(stdin);
+   cout<<"\t* ENTER STUDENT NAME :";cin.getline(name,29);fflush(stdin);
+   cout<<"\t* ENTER STUDENT ROLL.NO :";cin>>Roll_no;fflush(stdin);
+   cout<<"\t* ENTER STUDENT AGE :";cin>>age;fflush(stdin);
+   cout<<"\t*Enter Total registered courses by the student";
+   int n;
+   cin>>n;
+   cout<<endl;
+   Enter_courses(n);
+
+
+}
+
+void student::Enter_courses(int n){
+    fflush(stdin);
+    unordered_map<string,Courses> Temp=courseCatalog();
 
     while (n--) {
         string courseID;
         cout << "Enter the Course ID: ";
-        getline(cin, courseID); // Read course ID
-
-        if (Temp.find(courseID) == Temp.end()) {
-            cout << "Course not found! Try again.\n";
-            ++n; // Retry the same iteration if course is invalid
-        } else {
-            registeredCourses.push_back(courseID);
-
-            cout << "Enter marks obtained in " << courseID << ": ";
-            int marks;
-            cin >> marks;
-            marks_map[courseID] = marks;
-            cin.ignore(); // Clear buffer for next input
-            totalCourses++; // Increment for every valid course entered
+        cin >> courseID;
+        if(Temp.find(courseID) == Temp.end()){
+            cout<<"Course not Found"<<endl;
+            n++;
+        }
+        else{
+        registeredCourses.push_back(convert(courseID));
+        cout << "Enter Marks obtained in " << courseID << ": ";
+        cin >> marks_map[courseID];
         }
     }
 }
 
-// Method to calculate CGPA
-double student::calculateCGPA() {
-    double totalPoints = 0;
+
+
+double  student::Calculate_CGPA(const unordered_map<string, Courses>& courseCatalog) {
+   vector<GradePolicy> gradePolicy = {
+        {90, 100, 'A'}, {80, 89, 'B'}, {70, 79, 'C'},
+        {60, 69, 'D'}, {50, 59, 'E'}, {0, 49, 'F'}
+    };
+
+    // Mapping grades to grade points
+    unordered_map<char, int> gradePoints = {
+        {'A', 10}, {'B', 8}, {'C', 6}, {'D', 4}, {'E', 2}, {'F', 0}
+    };
+
+    double totalGradePoints = 0.0;
     int totalCredits = 0;
 
-    unordered_map<string, Courses> Temp = courseCatalog();
-    for (const auto& course : registeredCourses) {
-        auto it = Temp.find(course);
-        if (it != Temp.end()) {
-            totalPoints += it->second.credits * marks_map[course];
-            totalCredits += it->second.credits;
+    for (const auto& courseID : registeredCourses) {
+        int marks = marks_map[courseID];
+        char grade = 'F'; // Default grade
+
+        // Determine the grade based on marks
+        for (const auto& policy : gradePolicy) {
+            if (marks >= policy.LowerBound && marks <= policy.UpperBound) {
+                grade = policy.Grade;
+                break;
+            }
+        }
+
+        // Fetch the course credits
+        if (courseCatalog.find(courseID) != courseCatalog.end()) {
+            int credits = courseCatalog.at(courseID).credits;
+
+            // Add grade points to total
+            totalGradePoints += gradePoints[grade] * credits;
+            totalCredits += credits;
+        } else {
+            cout << "Course ID " << courseID << " not found in catalog." << endl;
         }
     }
 
-    if (totalCredits == 0) {
-        return 0.0;
-    }
-    return totalPoints / totalCredits;
+    // Calculate CGPA
+    CGPA = (totalCredits > 0) ? (totalGradePoints / totalCredits) : 0.0;
+
+    return CGPA;
 }
 
-// Save all students to file
-void saveAllStudentsToFile(const vector<student>& students, const char* filename) {
-    ofstream file(filename, ios::out | ios::binary);
-    if (!file) {
-        cout << "Error opening file for writing.\n";
-        return;
+
+
+
+
+
+
+void student::showdata()
+{
+    cout<<"\t|NAME of the student is       |->    "<<name<<"   "<<endl;
+    cout<<"\t|                             |                   "<<endl;
+    cout<<"\t|Roll.NO of the student is    |->       "<<Roll_no<<"          "<<endl;
+           
+    cout<<"\t|Age of the student is        |->        "<<age<<"         "<<endl;
+    cout<<"\t|                             |                   "<<endl;
+    cout<<"\t| Courses and marks of the students|-> ";
+    if (marks_map.empty()) {
+    cout << "marks_map is empty!" << endl;
+   }
+   else {
+    for (const auto& it : marks_map) {
+        cout << it.first << " -> " << it.second << endl;
     }
-
-    int numStudents = students.size();
-    file.write(reinterpret_cast<const char*>(&numStudents), sizeof(numStudents)); // Save the number of students
-
-    for (const auto& s : students) {
-        // Write simple data types
-        size_t nameLength = s.name.size();
-        file.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
-        file.write(s.name.c_str(), nameLength);
-
-        file.write(reinterpret_cast<const char*>(&s.Roll_no), sizeof(s.Roll_no));
-        file.write(reinterpret_cast<const char*>(&s.age), sizeof(s.age));
-
-        size_t branchLength = s.Branch.size();
-        file.write(reinterpret_cast<const char*>(&branchLength), sizeof(branchLength));
-        file.write(s.Branch.c_str(), branchLength);
-
-        // Write registered courses
-        int totalCourses = s.registeredCourses.size();
-        file.write(reinterpret_cast<const char*>(&totalCourses), sizeof(totalCourses));
-
-        for (const auto& course : s.registeredCourses) {
-            size_t courseLength = course.size();
-            file.write(reinterpret_cast<const char*>(&courseLength), sizeof(courseLength));
-            file.write(course.c_str(), courseLength);
-        }
-
-        // Write marks_map
-        int marksCount = s.marks_map.size();
-        file.write(reinterpret_cast<const char*>(&marksCount), sizeof(marksCount));
-
-        for (const auto& entry : s.marks_map) {
-            size_t courseLength = entry.first.size();
-            file.write(reinterpret_cast<const char*>(&courseLength), sizeof(courseLength));
-            file.write(entry.first.c_str(), courseLength);
-            file.write(reinterpret_cast<const char*>(&entry.second), sizeof(entry.second));
-        }
-
-        // Write CGPA
-        file.write(reinterpret_cast<const char*>(&s.CGPA), sizeof(s.CGPA));
-    }
-
-    file.close();
+}   
+        
 }
 
-// Load all students from file
-void loadAllStudentsFromFile(vector<student>& students, const char* filename) {
-    ifstream file(filename, ios::in | ios::binary);
-    if (!file) {
-        cout << "Error opening file for reading.\n";
-        return;
+int student::storedata()
+{
+    if(age==0 && Roll_no==0)
+    {
+        cout<<"\n Student data not initialized : ";
+        return(0);
     }
+    else
+    {
+        ofstream fout;
+        fout.open("file.dat",ios::app|ios::binary);
+        fout.write((char*)this,sizeof(*this));
+        fout.close();
+        return(1);
 
-    int numStudents;
-    file.read(reinterpret_cast<char*>(&numStudents), sizeof(numStudents));
-
-    for (int i = 0; i < numStudents; ++i) {
-        student s;
-
-        // Read name
-        size_t nameLength;
-        file.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
-        s.name.resize(nameLength);
-        file.read(&s.name[0], nameLength);
-
-        // Read roll number, age, and branch
-        file.read(reinterpret_cast<char*>(&s.Roll_no), sizeof(s.Roll_no));
-        file.read(reinterpret_cast<char*>(&s.age), sizeof(s.age));
-
-        size_t branchLength;
-        file.read(reinterpret_cast<char*>(&branchLength), sizeof(branchLength));
-        s.Branch.resize(branchLength);
-        file.read(&s.Branch[0], branchLength);
-
-        // Read registered courses
-        int totalCourses;
-        file.read(reinterpret_cast<char*>(&totalCourses), sizeof(totalCourses));
-        s.totalCourses = totalCourses;
-
-        for (int j = 0; j < totalCourses; ++j) {
-            size_t courseLength;
-            file.read(reinterpret_cast<char*>(&courseLength), sizeof(courseLength));
-
-            string courseID(courseLength, ' ');
-            file.read(&courseID[0], courseLength);
-            s.registeredCourses.push_back(courseID);
-        }
-
-        // Read marks_map
-        int marksCount;
-        file.read(reinterpret_cast<char*>(&marksCount), sizeof(marksCount));
-
-        for (int j = 0; j < marksCount; ++j) {
-            size_t courseLength;
-            file.read(reinterpret_cast<char*>(&courseLength), sizeof(courseLength));
-
-            string courseID(courseLength, ' ');
-            file.read(&courseID[0], courseLength);
-
-            int marks;
-            file.read(reinterpret_cast<char*>(&marks), sizeof(marks));
-
-            s.marks_map[courseID] = marks;
-        }
-
-        // Read CGPA
-        file.read(reinterpret_cast<char*>(&s.CGPA), sizeof(s.CGPA));
-
-        students.push_back(s);
     }
-
-    file.close();
+}
+void student::viewAlldata()
+{
+    ifstream fin;
+    fin.open("file.dat",ios::in|ios::binary);
+    if(!fin)
+        cout<<"error file not found:";
+    else{
+        fin.read((char*)this,sizeof(*this));
+        while(!fin.eof()){
+            showdata();
+           fin.read((char*)this,sizeof(*this));
+        }
+        fin.close();
+    }
 }
 
-int main() {
-    cout<<"working";
+void student::searchData(char *t)
+{
+    int count=0;
+    ifstream fin;
+    fin.open("file.dat",ios::in|ios::binary);
+    if(!fin)
+        cout<<"error file not found:";
+    else{
+        fin.read((char*)this,sizeof(*this));
+        while(!fin.eof()){
+            if(!strcmp(t,name)){
+                showdata();
+                count++;
+            }
+           fin.read((char*)this,sizeof(*this));
+        }
+        if(count==0)
+            cout<<"\n record not found:";
+        fin.close();
+    }
+}
+void student::showsearch()
+{
+    cout<<"\t\t*"<<"\n";
+    cout<<"\t\t*                                   *"<<"\n";
+    cout<<"\t\t*      STUDENT SEARCH OPTION        *"<<"\n";
+    cout<<"\t\t*                                   *"<<"\n";
+    cout<<"\t\t*"<<"\n";
+    char ser[30];
+    cout<<"\t\t Enter Name of the student:";
+    fflush(stdin);
+    cin.getline(ser,29);
+    searchData(ser);
+}
+void student::deleteData(char *t)
+{
+     ifstream fin;
+    ofstream fout;
+    fin.open("file.dat",ios::in|ios::binary);
+    if(!fin)
+    {
+        ccolor(12);
+        cout<<"Error file not found:";
+    }
+
+    else{
+        fout.open("temp.dat",ios::out|ios::binary);
+        fin.read((char*)this,sizeof(*this));
+        while(!fin.eof())
+        {
+            if(strcmp(name,t))
+                fout.write((char*)this,sizeof(*this));
+            fin.read((char*)this,sizeof(*this));
+        }
+        fin.close();
+        fout.close();
+        remove("file.dat");
+        rename("temp.dat","file.dat");
+    }
+}
+void student::updateData(char *t)
+{
+    fstream file;
+    file.open("file.dat",ios::in|ios::out|ios::ate|ios::binary);
+    file.seekg(0);
+    file.read((char*)this,sizeof(*this));
+    while(!file.eof())
+    {
+        if(!strcmp(t,name)){
+            getdata();
+            file.seekp(file.tellp()-sizeof(*this));
+            file.write((char*)this,sizeof(*this));
+        }
+        file.read((char*)this,sizeof(*this));
+    }
+}
+
+int main()
+{
+    student s1;
+    // s1.loadingbar();
+    // s1.intro();
+    // s1.login();
+    s1.ccolor(929);
     int choice;
-    vector<student> students;
-    // Load students from file when the program starts
-    loadAllStudentsFromFile(students, "students.dat");
-
-    while (true) {
-        // Display menu
-        cout << "\n*                                                           *\n";
-        cout << "*              1. Insert Student Record                    *\n";
-        cout << "*              2. View All Student Records                 *\n";
-        cout << "*              3. Search Student Record                    *\n";
-        cout << "*              4. Delete Student Record                    *\n";
-        cout << "*              5. Exit the Program                         *\n";
-        cout << "*                                                           *\n";
-        cout << "\nEnter Your Choice: ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1: {
-                student newStudent;
-                newStudent.getdata();
-                newStudent.CGPA = newStudent.calculateCGPA();
-                students.push_back(newStudent);
-                cout << "\nStudent Record Inserted Successfully!\n";
-                break;
-            }
-            case 2: {
-                cout << "\nAll Student Records: \n";
-                for (const auto& s : students) {
-                    s.showdata();
-                    cout << "\n--------------------------------------\n";
-                }
-                break;
-            }
-            case 3: {
-                long long rollNo;
-                cout << "Enter Roll No to Search: ";
-                cin >> rollNo;
-
-                bool found = false;
-                for (const auto& s : students) {
-                    if (s.Roll_no == rollNo) {
-                        s.showdata();
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    cout << "Student with Roll No " << rollNo << " not found.\n";
-                }
-                break;
-            }
-            case 4: {
-                long long rollNo;
-                cout << "Enter Roll No to Delete: ";
-                cin >> rollNo;
-
-                auto it = remove_if(students.begin(), students.end(), [rollNo](const student& s) {
-                    return s.Roll_no == rollNo;
-                });
-
-                if (it != students.end()) {
-                    students.erase(it, students.end());
-                    cout << "Student with Roll No " << rollNo << " deleted.\n";
-                } else {
-                    cout << "Student with Roll No " << rollNo << " not found.\n";
-                }
-                break;
-            }
-            case 5: {
-                // Save students to file before exiting
-                saveAllStudentsToFile(students, "students.dat");
-                cout << "Exiting Program...\n";
-                return 0;
-            }
-            default:
-                cout << "Invalid choice, please try again.\n";
+    while(choice!=6)
+    {
+        s1.ccolor(929);
+        system("cls");
+    cout<<"*"<<"\n";
+    cout<<"***                                                           ***"<<"\n";
+    cout<<"***              1. Insert Student record.                    ***"<<"\n";
+    cout<<"***              2. View All Student record.                  ***"<<"\n";
+    cout<<"***              3. Search Student record.                    ***"<<"\n";
+    cout<<"***              4. Delete Student record.                    ***"<<"\n";
+    cout<<"***              5. Update Student record.                    ***"<<"\n";
+    cout<<"***              6. For Exit The Program.                     ***"<<"\n";
+    cout<<"***                                                           ***"<<"\n";
+    cout<<"*"<<"\n";
+    cout<<"\n        Enter Your choice:";
+    cin>>choice;
+    switch(choice)
+    {
+    case 1:
+        s1.getdata();
+        s1.storedata();
+        cout<<"\n\t\t Data is Successfully Stored:";
+        getch();
+        break;
+    case 2:
+        s1.viewAlldata();
+        getch();
+        break;
+    case 3:
+        s1.showsearch();
+        getch();
+        break;
+    case 4:
+        cout<<"\n\n Enter Student Name to delete a record:";
+        char name[30];fflush(stdin);
+        cin.getline(name,29);
+        s1.deleteData(name);
+        cout<<"\n\t\t Data is Successfully Deleted:";
+        getch();
+        break;
+    case 5:
+        cout<<"\n\n Enter Student Name to Update a record:";fflush(stdin);
+        cin.getline(name,29);
+        s1.updateData(name);
+        cout<<"\n\t\t Data is Successfully Updated:";
+        getch();
+        break;
+    case 6:
+        s1.ccolor(558);
+        cout<<"\n\t\t Thank You For using This Application:";
+        cout<<"\n\t\t Enter Any Key To Exit:-";
+        getch();
+        exit(0);
+        break;
+    default:
+        s1.ccolor(12);
+        cout<<"Invalid Input Try Again:";
+        getch();
         }
     }
-
-    return 0;
+    getch();
 }
